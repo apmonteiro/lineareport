@@ -14,6 +14,14 @@ autocorrelação usam só regressões auxiliares sobre os resíduos informados p
 
 Em outro sistema: `cd backend`, `pip install -r requirements.txt` e `python run_server.py`.
 
+## Versão Streamlit (Streamlit Community Cloud)
+
+`streamlit_app.py` é uma interface alternativa que usa o mesmo backend (`backend/linea`), sem o Flask.
+
+- Local: `pip install -r requirements.txt` e `streamlit run streamlit_app.py`.
+- Nuvem: em share.streamlit.io, crie o app apontando para este repositório, branch `main`, arquivo `streamlit_app.py`.
+- Opcional: em *Settings → Secrets* do app, defina `EMAIL_FEEDBACK = "seu@email"` para os comentários abrirem o e-mail.
+
 Sem interface (vários arquivos de uma vez):
 
 ```
