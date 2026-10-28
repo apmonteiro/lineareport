@@ -1,0 +1,102 @@
+{
+  "_comentario": "Limites usados nas conferências. Altere aqui (não no código) se a norma ou a orientação da SPU mudar. Confira cada valor com o texto vigente.",
+  "nivel_significancia_testes": 0.05,
+  "linearidade": {
+    "fonte": "IN SPU (recomendação)",
+    "r_minimo": 0.75,
+    "verificar": [
+      "equacao",
+      "funcao"
+    ]
+  },
+  "normalidade": {
+    "fonte": "Manual de Avaliações da SPU",
+    "faixas": [
+      {
+        "sigma": 1.0,
+        "minimo": 66,
+        "maximo": 73
+      },
+      {
+        "sigma": 1.64,
+        "minimo": 85,
+        "maximo": 95
+      },
+      {
+        "sigma": 1.96,
+        "minimo": 95,
+        "maximo": 100
+      }
+    ],
+    "testes_quando_faixas_falham": [
+      "qui_quadrado",
+      "kolmogorov_smirnov",
+      "jarque_bera"
+    ],
+    "regra_decisao": "maioria"
+  },
+  "homocedasticidade": {
+    "testes": [
+      "park",
+      "white",
+      "breusch_pagan"
+    ],
+    "regra_decisao": "maioria"
+  },
+  "autocorrelacao": {
+    "alfa_cada_cauda": 0.05,
+    "descricao_confianca": "90%",
+    "teste_se_inconclusivo": "breusch_godfrey"
+  },
+  "multicolinearidade": {
+    "correlacao_maxima": 0.8,
+    "tabelas": [
+      "isoladas",
+      "influencia"
+    ]
+  },
+  "outliers": {
+    "percentual_maximo": 5.0,
+    "limite_residuo_padronizado": 2.0,
+    "cook_maximo": 1.0
+  },
+  "micronumerosidade": {
+    "fonte": "ABNT NBR 14653-2",
+    "regras": [
+      {
+        "n_ate": 30,
+        "tipo": "absoluto",
+        "minimo": 3
+      },
+      {
+        "n_ate": 100,
+        "tipo": "percentual",
+        "minimo": 10
+      },
+      {
+        "n_ate": null,
+        "tipo": "absoluto",
+        "minimo": 10
+      }
+    ]
+  },
+  "significancia_regressores": {
+    "fonte": "ABNT NBR 14653-2, Tabela de fundamentação, item 5",
+    "graus": {
+      "III": 10,
+      "II": 20,
+      "I": 30
+    }
+  },
+  "significancia_modelo": {
+    "fonte": "ABNT NBR 14653-2, Tabela de fundamentação, item 6",
+    "graus": {
+      "III": 1,
+      "II": 2,
+      "I": 5
+    }
+  },
+  "consistencia_leitura": {
+    "tolerancia_residuo_padronizado": 0.01
+  }
+}

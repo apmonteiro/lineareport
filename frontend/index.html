@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LineaReport</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilo.css">
+<script src="config.js"></script>
+</head>
+<body>
+<header class="topo">
+  <div class="largura topo-linha">
+    <a class="marca" href="./" aria-label="LineaReport, início">
+      <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M2 19 L20 4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="5" cy="12" r="1.8" fill="currentColor"/><circle cx="10" cy="15" r="1.8" fill="currentColor"/><circle cx="14" cy="6" r="1.8" fill="currentColor"/><circle cx="17" cy="10" r="1.8" fill="currentColor"/></svg>
+      LineaReport
+    </a>
+    <span class="topo-sub">Conferência de modelos de regressão do SisDEA</span>
+  </div>
+</header>
+
+<main class="largura">
+  <!-- TELA INICIAL -->
+  <section id="tela-inicial">
+    <h1>Confira o relatório do SisDEA antes de usá-lo no laudo</h1>
+    <p class="lead">Envie o relatório estatístico do SisDEA em .rtf ou .pdf. O LineaReport lê os parâmetros do modelo e confere os pressupostos da regressão, a micronumerosidade e os testes de hipóteses, conforme a ABNT NBR 14653-2 e as orientações da SPU.</p>
+
+    <label id="zona" class="zona" for="arquivo">
+      <input type="file" id="arquivo" accept=".rtf,.pdf" hidden>
+      <svg width="36" height="36" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 17v-6M9.5 13.5 12 11l2.5 2.5"/></svg>
+      <span class="zona-titulo">Arraste o arquivo .rtf ou .pdf aqui ou clique para selecionar</span>
+      <span class="zona-sub">A análise começa assim que o arquivo é carregado. Nada é guardado no servidor.</span>
+    </label>
+    <div id="carregando" class="carregando" hidden role="status">
+      <span class="giro" aria-hidden="true"></span><span id="carregando-txt">Analisando o relatório…</span>
+    </div>
+    <div id="erro" class="erro" hidden role="alert"></div>
+
+    <aside class="isencao">
+      <strong>Isenção de responsabilidade.</strong> Esta ferramenta apoia o avaliador na conferência do relatório estatístico. A escolha do modelo de regressão e a responsabilidade técnica por ele são do avaliador.
+    </aside>
+
+    <div class="colunas">
+      <div>
+        <h2>Como usar</h2>
+        <ol class="passos">
+          <li>No SisDEA, gere o relatório estatístico do modelo e salve em .rtf ou em .pdf.</li>
+          <li>Carregue o arquivo acima.</li>
+          <li>Leia o resultado de cada conferência na página. Se quiser guardar, use o botão Exportar relatório e escolha o formato (.docx, .odt ou .pdf).</li>
+        </ol>
+      </div>
+      <div>
+        <h2>O que é conferido</h2>
+        <ul class="conferidos">
+          <li>Linearidade (coeficientes de correlação)</li>
+          <li>Normalidade dos resíduos</li>
+          <li>Homocedasticidade</li>
+          <li>Autocorrelação (Durbin-Watson)</li>
+          <li>Multicolinearidade</li>
+          <li>Outliers e distância de Cook</li>
+          <li>Micronumerosidade</li>
+          <li>Significância dos regressores (t)</li>
+          <li>Significância do modelo (F)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- TELA DE RESULTADO -->
+  <section id="tela-resultado" hidden>
+    <div class="barra">
+      <div class="barra-info">
+        <span id="r-arquivo" class="barra-arquivo"></span>
+      </div>
+      <div class="barra-acoes">
+        <button class="botao" id="abrir-export" aria-haspopup="dialog">Exportar relatório</button>
+        <button class="botao botao-secundario" id="novo">Analisar outro arquivo</button>
+      </div>
+    </div>
+
+    <h1 id="r-titulo"></h1>
+    <p id="r-placar" class="placar"></p>
+    <dl id="r-ident" class="ident"></dl>
+
+    <div class="cab-lista">
+      <h2>Conferências</h2>
+      <button class="link" id="alternar" type="button">Recolher todas</button>
+    </div>
+    <ol id="r-lista" class="lista"></ol>
+
+    <h2>Leitura do arquivo</h2>
+    <div id="r-leitura"></div>
+
+    <h2>Informe de erros e comentários</h2>
+    <p class="dica">Encontrou um erro de leitura ou tem uma sugestão? Descreva abaixo. O texto segue com o nome do arquivo analisado.</p>
+    <textarea id="fb-texto" rows="4" placeholder="Ex.: a variável X foi lida com valor diferente do relatório."></textarea>
+    <div class="fb-acoes">
+      <button class="botao" id="fb-enviar">Enviar comentário</button>
+      <span id="fb-status" class="dica" role="status"></span>
+    </div>
+  </section>
+</main>
+
+<dialog id="dlg-export" aria-labelledby="dlg-titulo">
+  <form method="dialog" id="form-export">
+    <h2 id="dlg-titulo">Exportar relatório</h2>
+    <p class="dica">O relatório traz a identificação do modelo e todas as conferências desta página.</p>
+    <fieldset class="formatos">
+      <legend>Formato do arquivo</legend>
+      <label><input type="radio" name="formato" value="docx" checked> <span><strong>Word</strong> (.docx)</span></label>
+      <label><input type="radio" name="formato" value="odt"> <span><strong>LibreOffice / BrOffice</strong> (.odt)</span></label>
+      <label><input type="radio" name="formato" value="pdf"> <span><strong>PDF</strong> (.pdf)</span></label>
+    </fieldset>
+    <div id="erro-export" class="erro" hidden role="alert"></div>
+    <div class="dlg-acoes">
+      <button class="botao botao-secundario" value="cancelar" type="submit" formnovalidate>Cancelar</button>
+      <button class="botao" id="confirmar-export" type="button">Exportar</button>
+    </div>
+  </form>
+</dialog>
+
+<footer class="rodape largura">LineaReport <span id="versao"></span>. Critérios: ABNT NBR 14653-2, IN SPU e Manual de Avaliações da SPU.</footer>
+<script src="app.js"></script>
+</body>
+</html>
