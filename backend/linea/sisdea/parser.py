@@ -303,6 +303,7 @@ def _valida(m: ModeloSisDEA) -> None:
             m.avisos.append(f"A descrição das variáveis classifica \"{v.nome}\" como Dependente, mas no modelo ela "
                             f"é usada como variável independente (a dependente é \"{dep}\"). Confira a "
                             "classificação no cadastro do SisDEA.")
+    _valores_ausentes(m)
     usados = [a for a in m.amostra if not a.desabilitado]
     if m.dados_utilizados is not None and m.amostra and len(usados) != m.dados_utilizados:
         m.avisos.append(f"A tabela de dados tem {len(usados)} dados habilitados, mas o relatório "
@@ -310,6 +311,68 @@ def _valida(m: ModeloSisDEA) -> None:
     if m.dados_utilizados is not None and m.residuos and len(m.residuos) != m.dados_utilizados:
         m.avisos.append(f"A tabela de resíduos tem {len(m.residuos)} linhas, mas o relatório "
                         f"informa {m.dados_utilizados} dados utilizados.")
+
+
+_NOMES_SECOES = {"coeficientes": "Coeficientes de Correlação", "normalidade": "Normalidade dos Resíduos",
+                 "outliers": "Outliers do Modelo", "info_complementares": "Informações Complementares",
+                 "hipoteses": "Testes de Hipóteses", "residuos": "Tabela de Resíduos"}
+
+# Faixas de normalidade que o SisDEA sempre informa
+_SIGMAS_NORMALIDADE = (1.0, 1.64, 1.96)
+
+
+def _valores_ausentes(m: ModeloSisDEA) -> None:
+    """Avisa quando um valor isolado usado nas conferências não foi lido, mesmo com a seção
+    presente (por exemplo, um relatório com layout diferente do esperado). Seções obrigatórias
+    ausentes já têm aviso próprio e não são repetidas aqui."""
+    achadas = set(m.secoes_encontradas)
+
+    def avisa(secao: str, itens: List[str], consequencia: str) -> None:
+        if not itens or (secao in SECOES_OBRIGATORIAS and secao not in achadas):
+            return
+        onde = _NOMES_SECOES.get(secao, SECOES[secao].title())
+        if secao not in achadas:
+            m.avisos.append(f"Seção não encontrada no relatório: {onde}. Sem ela não foram lidos: "
+                            f"{', '.join(itens)}. {consequencia}")
+        else:
+            m.avisos.append(f"Valor não encontrado na seção {onde}: {', '.join(itens)}. {consequencia}")
+
+    falta = []
+    if m.r_equacao is None:
+        falta.append("coeficiente de correlação da equação")
+    if m.r_funcao is None:
+        falta.append("coeficiente de correlação da função estimativa")
+    if falta:
+        avisa("coeficientes", falta, "A conferência de linearidade fica sem esse dado.")
+    falta = []
+    if m.significancia_modelo is None:
+        falta.append("significância do modelo")
+    if m.f_calculado is None:
+        falta.append("F calculado (Fisher-Snedecor)")
+    if falta:
+        avisa("coeficientes", falta, "A conferência de significância do modelo fica sem esse dado.")
+
+    falta = [f"faixa ±{str(s).replace('.', ',').rstrip('0').rstrip(',')}σ" for s in _SIGMAS_NORMALIDADE
+             if not any(abs(f.sigma - s) < 1e-6 and f.modelo is not None for f in m.normalidade)]
+    avisa("normalidade", falta, "A conferência de normalidade fica sem esse dado.")
+
+    if m.n_outliers is None and m.pct_outliers is None:
+        avisa("outliers", ["quantidade e percentual de outliers"],
+              "A conferência de outliers fica sem esse dado.")
+
+    if m.dados_utilizados is None:
+        avisa("info_complementares", ["dados utilizados no modelo"],
+              "O número de dados (n) foi contado na tabela de dados.")
+
+    sem_sig = [r.nome for r in m.regressores if not r.eh_intercepto and r.significancia is None]
+    if sem_sig:
+        avisa("hipoteses", [f"significância de {', '.join(sem_sig)}"],
+              "Essas variáveis ficam sem conferência de significância.")
+
+    sem_pad = [str(r.dado) for r in m.residuos if r.padronizado is None]
+    if sem_pad:
+        avisa("residuos", [f"resíduo padronizado (resíduo/DP) dos dados {', '.join(sem_pad)}"],
+              "A conferência de consistência da leitura e a de outliers ficam prejudicadas.")
 
 
 def interpretar_arquivo(caminho: str) -> ModeloSisDEA:
