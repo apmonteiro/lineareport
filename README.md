@@ -14,6 +14,8 @@ autocorrelação usam só regressões auxiliares sobre os resíduos informados p
 
 Em outro sistema: `cd backend`, `pip install -r requirements.txt` e `python run_server.py`.
 
+Para instalar num servidor da rede interna (vários usuários, com ou sem internet), veja [INTRANET.md](INTRANET.md).
+
 ## Versão Streamlit (Streamlit Community Cloud)
 
 `streamlit_app.py` é uma interface alternativa que usa o mesmo backend (`backend/linea`), sem o Flask.
