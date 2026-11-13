@@ -1,9 +1,10 @@
-# Versão Streamlit (inclui as dependências do backend). Versões fixadas.
-streamlit==1.65.0
-pandas==2.3.3
-numpy==2.2.6
-scipy==1.15.3
-python-docx==1.2.0
-odfpy==1.4.1
-reportlab==5.1.0
-pdfplumber==0.11.10
+# Versão Streamlit Cloud: versões mínimas, para o Streamlit escolher as compatíveis com o Python dele.
+# As versões fixadas para a intranet ficam em backend/requirements.txt.
+streamlit>=1.39
+pandas
+numpy>=1.26
+scipy>=1.11
+python-docx>=1.1
+odfpy>=1.4
+reportlab>=4.0
+pdfplumber>=0.11
