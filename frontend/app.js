@@ -10,8 +10,12 @@
   const esc = (t) => String(t == null ? "" : t)
     .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
-  fetch(API + "saude").then((r) => r.json())
-    .then((d) => { $("#versao").textContent = d.versao; }).catch(() => {});
+  // Versão "no navegador" (pasta navegador/): o motor.js define window.LineaMotor e a análise
+  // roda no próprio navegador, sem servidor. Sem ele, a página usa a API do servidor.
+  const MOTOR = window.LineaMotor || null;
+
+  (MOTOR ? MOTOR.versao() : fetch(API + "saude").then((r) => r.json()).then((d) => d.versao))
+    .then((v) => { $("#versao").textContent = v; }).catch(() => {});
 
   // ---------------- upload ----------------
   const zona = $("#zona"), input = $("#arquivo");
@@ -36,16 +40,21 @@
       return;
     }
     $("#carregando").hidden = false;
-    const fd = new FormData();
-    fd.append("arquivo", arquivo);
     try {
-      const resp = await fetch(API + "analisar", { method: "POST", body: fd });
-      const dados = await resp.json().catch(() => ({}));
-      if (!resp.ok) throw new Error(dados.erro || `O servidor respondeu com erro ${resp.status}.`);
+      let dados;
+      if (MOTOR) {
+        dados = await MOTOR.analisar(arquivo);
+      } else {
+        const fd = new FormData();
+        fd.append("arquivo", arquivo);
+        const resp = await fetch(API + "analisar", { method: "POST", body: fd });
+        dados = await resp.json().catch(() => ({}));
+        if (!resp.ok) throw new Error(dados.erro || `O servidor respondeu com erro ${resp.status}.`);
+      }
       analise = dados;
       renderiza(dados);
     } catch (err) {
-      mostraErro(err.message.includes("fetch") ?
+      mostraErro(!MOTOR && err.message.includes("fetch") ?
         "Não foi possível falar com o servidor do LineaReport. Verifique se ele está em execução." : err.message);
     } finally {
       $("#carregando").hidden = true;
@@ -123,11 +132,16 @@
     const b = $("#confirmar-export"), el = $("#erro-export");
     el.hidden = true; b.disabled = true; b.textContent = "Gerando…";
     try {
-      const resp = await fetch(API + "exportar/" + fmt, {
-        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(analise)
-      });
-      if (!resp.ok) throw new Error((await resp.json().catch(() => ({}))).erro || "Não foi possível gerar o relatório.");
-      const blob = await resp.blob();
+      let blob;
+      if (MOTOR) {
+        blob = await MOTOR.exportar(analise, fmt);
+      } else {
+        const resp = await fetch(API + "exportar/" + fmt, {
+          method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(analise)
+        });
+        if (!resp.ok) throw new Error((await resp.json().catch(() => ({}))).erro || "Não foi possível gerar o relatório.");
+        blob = await resp.blob();
+      }
       const nome = (analise.arquivo || "modelo").replace(/\.(rtf|pdf)$/i, "").replace(/[^\w-]+/g, "_");
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob); a.download = `Analise_${nome}.${fmt}`;
