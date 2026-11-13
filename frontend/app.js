@@ -1,6 +1,8 @@
 (function () {
   "use strict";
   const CFG = window.LINEA_CONFIG || { API_BASE: "", EMAIL_FEEDBACK: "" };
+  // Caminho relativo quando API_BASE está vazio: funciona também publicado em subpasta (ex.: /lineareport/).
+  const API = CFG.API_BASE ? CFG.API_BASE.replace(/\/$/, "") + "/api/" : "api/";
   const $ = (s) => document.querySelector(s);
   const ROTULO = { atende: "Atende", nao_atende: "Não atende", nao_verificavel: "Não verificável" };
   let analise = null;
@@ -8,7 +10,7 @@
   const esc = (t) => String(t == null ? "" : t)
     .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
-  fetch(CFG.API_BASE + "/api/saude").then((r) => r.json())
+  fetch(API + "saude").then((r) => r.json())
     .then((d) => { $("#versao").textContent = d.versao; }).catch(() => {});
 
   // ---------------- upload ----------------
@@ -37,7 +39,7 @@
     const fd = new FormData();
     fd.append("arquivo", arquivo);
     try {
-      const resp = await fetch(CFG.API_BASE + "/api/analisar", { method: "POST", body: fd });
+      const resp = await fetch(API + "analisar", { method: "POST", body: fd });
       const dados = await resp.json().catch(() => ({}));
       if (!resp.ok) throw new Error(dados.erro || `O servidor respondeu com erro ${resp.status}.`);
       analise = dados;
@@ -121,7 +123,7 @@
     const b = $("#confirmar-export"), el = $("#erro-export");
     el.hidden = true; b.disabled = true; b.textContent = "Gerando…";
     try {
-      const resp = await fetch(CFG.API_BASE + "/api/exportar/" + fmt, {
+      const resp = await fetch(API + "exportar/" + fmt, {
         method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(analise)
       });
       if (!resp.ok) throw new Error((await resp.json().catch(() => ({}))).erro || "Não foi possível gerar o relatório.");

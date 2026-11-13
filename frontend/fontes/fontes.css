@@ -1,0 +1,5 @@
+/* Public Sans (SIL Open Font License 1.1, ver OFL.txt), servida pelo próprio app: funciona sem internet. */
+@font-face { font-family: "Public Sans"; font-style: normal; font-weight: 400; font-display: swap; src: url("PublicSans-400.woff2") format("woff2"); }
+@font-face { font-family: "Public Sans"; font-style: normal; font-weight: 500; font-display: swap; src: url("PublicSans-500.woff2") format("woff2"); }
+@font-face { font-family: "Public Sans"; font-style: normal; font-weight: 600; font-display: swap; src: url("PublicSans-600.woff2") format("woff2"); }
+@font-face { font-family: "Public Sans"; font-style: normal; font-weight: 700; font-display: swap; src: url("PublicSans-700.woff2") format("woff2"); }
