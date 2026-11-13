@@ -1,0 +1,1 @@
+window.LINEA_RODAS = ["odfpy-1.4.1-py2.py3-none-any.whl", "pdfminer_six-20260107-py3-none-any.whl", "pdfplumber-0.11.10-py3-none-any.whl", "python_docx-1.2.0-py3-none-any.whl", "reportlab-5.1.0-py3-none-any.whl"];
