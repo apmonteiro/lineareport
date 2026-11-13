@@ -39,7 +39,7 @@ p { margin: 0 0 12px; }
 
 /* upload */
 .zona {
-  margin-top: 28px; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center;
+  margin-top: 16px; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center;
   background: var(--superficie); border: 2px dashed #9AA595; border-radius: var(--raio);
   padding: 44px 20px; cursor: pointer; color: var(--oliva); transition: border-color .15s, background .15s;
 }
@@ -50,7 +50,7 @@ p { margin: 0 0 12px; }
 .giro { width: 18px; height: 18px; border: 2px solid var(--linha); border-top-color: var(--oliva); border-radius: 50%; animation: giro .8s linear infinite; }
 @keyframes giro { to { transform: rotate(360deg); } }
 .erro { margin-top: 16px; background: var(--falha-fundo); color: var(--falha); border-left: 4px solid var(--falha); padding: 12px 14px; border-radius: 0 var(--raio) var(--raio) 0; }
-.isencao { margin-top: 20px; background: var(--aviso-fundo); border-left: 4px solid #C98A1B; padding: 12px 14px; border-radius: 0 var(--raio) var(--raio) 0; font-size: 0.95rem; max-width: 72ch; }
+.isencao { margin-top: 28px; background: var(--aviso-fundo); border-left: 4px solid #C98A1B; padding: 12px 14px; border-radius: 0 var(--raio) var(--raio) 0; font-size: 0.95rem; max-width: 72ch; }
 .colunas { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
 .passos { padding-left: 1.3em; margin: 0; } .passos li { margin-bottom: 6px; }
 .conferidos { list-style: none; padding: 0; margin: 0; columns: 1; }

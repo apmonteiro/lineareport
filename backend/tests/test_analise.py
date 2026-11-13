@@ -150,6 +150,23 @@ class TestReprovacoes(unittest.TestCase):
         self.assertEqual(por_id(res)["homocedasticidade"]["status"], "nao_verificavel")
 
 
+class TestValoresAusentes(unittest.TestCase):
+    """Valores isolados que não são lidos (layout diferente) geram aviso na leitura."""
+
+    def test_rotulos_trocados_geram_avisos(self):
+        dados = variante(a=("Fisher - Snedecor:", "Fisher Snedecor"),
+                         b=("Quantidade de outliers:", "Qtd outliers"),
+                         c=("% de outliers:", "Pct outliers"))
+        m = interpretar(dados)
+        self.assertTrue(any("F calculado" in a for a in m.avisos), m.avisos)
+        res = analisar(dados, "v.rtf")
+        self.assertTrue(any("outliers" in a.lower() and "Valor não encontrado" in a
+                            for a in res["leitura"]["avisos"]), res["leitura"]["avisos"])
+
+    def test_sem_avisos_quando_tudo_lido(self):
+        self.assertEqual(interpretar(EX4).avisos, [])
+
+
 class TestPDF(unittest.TestCase):
     """O PDF deve produzir exatamente a mesma leitura do RTF.
     Os PDFs de teste foram gerados a partir dos RTFs (impressão em PDF)."""
