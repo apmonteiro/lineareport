@@ -27,27 +27,12 @@
     <h1>Confira o relatório do SisDEA antes de usá-lo no laudo</h1>
     <p class="lead">Envie o relatório estatístico do SisDEA em .rtf ou .pdf. O LineaReport lê os parâmetros do modelo e confere os pressupostos da regressão, a micronumerosidade e os testes de hipóteses, conforme a ABNT NBR 14653-2 e as orientações da SPU.</p>
 
-    <label id="zona" class="zona" for="arquivo">
-      <input type="file" id="arquivo" accept=".rtf,.pdf" hidden>
-      <svg width="36" height="36" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 17v-6M9.5 13.5 12 11l2.5 2.5"/></svg>
-      <span class="zona-titulo">Arraste o arquivo .rtf ou .pdf aqui ou clique para selecionar</span>
-      <span class="zona-sub">A análise começa assim que o arquivo é carregado. Nada é guardado no servidor.</span>
-    </label>
-    <div id="carregando" class="carregando" hidden role="status">
-      <span class="giro" aria-hidden="true"></span><span id="carregando-txt">Analisando o relatório…</span>
-    </div>
-    <div id="erro" class="erro" hidden role="alert"></div>
-
-    <aside class="isencao">
-      <strong>Isenção de responsabilidade.</strong> Esta ferramenta apoia o avaliador na conferência do relatório estatístico. A escolha do modelo de regressão e a responsabilidade técnica por ele são do avaliador.
-    </aside>
-
     <div class="colunas">
       <div>
         <h2>Como usar</h2>
         <ol class="passos">
           <li>No SisDEA, gere o relatório estatístico do modelo e salve em .rtf ou em .pdf.</li>
-          <li>Carregue o arquivo acima.</li>
+          <li>Carregue o arquivo no campo abaixo.</li>
           <li>Leia o resultado de cada conferência na página. Se quiser guardar, use o botão Exportar relatório e escolha o formato (.docx, .odt ou .pdf).</li>
         </ol>
       </div>
@@ -66,6 +51,20 @@
         </ul>
       </div>
     </div>
+    <aside class="isencao">
+      <strong>Isenção de responsabilidade.</strong> Esta ferramenta apoia o avaliador na conferência do relatório estatístico. A escolha do modelo de regressão e a responsabilidade técnica por ele são do avaliador.
+    </aside>
+
+    <label id="zona" class="zona" for="arquivo">
+      <input type="file" id="arquivo" accept=".rtf,.pdf" hidden>
+      <svg width="36" height="36" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 17v-6M9.5 13.5 12 11l2.5 2.5"/></svg>
+      <span class="zona-titulo">Arraste o arquivo .rtf ou .pdf aqui ou clique para selecionar</span>
+      <span class="zona-sub">A análise começa assim que o arquivo é carregado. Nada é guardado no servidor.</span>
+    </label>
+    <div id="carregando" class="carregando" hidden role="status">
+      <span class="giro" aria-hidden="true"></span><span id="carregando-txt">Analisando o relatório…</span>
+    </div>
+    <div id="erro" class="erro" hidden role="alert"></div>
   </section>
 
   <!-- TELA DE RESULTADO -->

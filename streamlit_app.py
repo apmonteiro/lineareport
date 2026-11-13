@@ -59,15 +59,18 @@ def tela_inicial() -> None:
         "ABNT NBR 14653-2 e as orientações da SPU.")
 
 
-def tela_info() -> None:
+def isencao() -> None:
     st.info("**Isenção de responsabilidade.** Esta ferramenta apoia o avaliador na conferência do relatório "
             "estatístico. A escolha do modelo de regressão e a responsabilidade técnica por ele são do avaliador.")
+
+
+def tela_info() -> None:
     c1, c2 = st.columns(2)
     with c1:
         st.subheader("Como usar")
         st.markdown(
             "1. No SisDEA, gere o relatório estatístico do modelo e salve em .rtf ou em .pdf.\n"
-            "2. Carregue o arquivo acima.\n"
+            "2. Carregue o arquivo no campo abaixo.\n"
             "3. Leia o resultado de cada conferência na página. Se quiser guardar, use **Exportar relatório** "
             "e escolha o formato (.docx, .odt ou .pdf).")
     with c2:
@@ -165,25 +168,30 @@ def comentarios(r: dict) -> None:
 st.title("LineaReport")
 st.caption("Conferência de modelos de regressão do SisDEA")
 
+# Texto explicativo e isenção ficam acima do campo de envio. Os contêineres são criados antes
+# do campo para manter essa ordem e preenchidos depois, quando já se sabe se há arquivo.
+explicacao = st.container()
+aviso = st.container()
 arquivo = st.file_uploader("Relatório do SisDEA (.rtf ou .pdf)", type=["rtf", "pdf"],
                            help="A análise começa assim que o arquivo é carregado. Nada é guardado no servidor.")
-if arquivo is None:
-    tela_inicial()
-    tela_info()
-else:
+analise = None
+if arquivo is not None:
     try:
         with st.spinner("Analisando o relatório…"):
             analise = analisar_cache(arquivo.getvalue(), arquivo.name)
     except ErroLeitura as e:
         st.error(str(e))
-        analise = None
     except Exception as e:  # noqa: BLE001
         st.error(f"Erro inesperado ao analisar o arquivo: {e}")
-        analise = None
-    if analise:
-        resultado(analise)
-    else:
+if analise:
+    resultado(analise)
+else:
+    with explicacao:
+        if arquivo is None:
+            tela_inicial()
         tela_info()
+    with aviso:
+        isencao()
 
 st.divider()
 st.caption(f"LineaReport {VERSAO}. Critérios: ABNT NBR 14653-2, IN SPU e Manual de Avaliações da SPU.")
